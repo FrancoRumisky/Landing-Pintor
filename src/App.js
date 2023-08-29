@@ -1,12 +1,14 @@
 import "./App.css";
 import Nav from "./Components/Nav/Nav";
-import Works from "./Components/Works/Works";
+import Carrusel from "./Components/Slider/Slider";
+import About from "./Components/About/About";
 
 function App() {
   return (
     <>
       <Nav />
-      <Works />
+      <Carrusel />
+      <About />
     </>
   );
 }
