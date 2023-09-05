@@ -2,6 +2,7 @@ import "./App.css";
 import Nav from "./Components/Nav/Nav";
 import Carrusel from "./Components/Slider/Slider";
 import About from "./Components/About/About";
+import Works from "./Components/Works/Works";
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <Nav />
       <Carrusel />
       <About />
+      <Works />
     </>
   );
 }
