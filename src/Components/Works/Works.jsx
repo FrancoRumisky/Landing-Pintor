@@ -1,7 +1,12 @@
 import React from 'react'
+import WorksGalery from '../WorksGalery/WorksGalery'
 
 export default function Works() {
   return (
-    <div>Works</div>
+    <>
+    <div>Nuestros Trabajos</div>
+    < WorksGalery />
+    
+    </>
   )
 }

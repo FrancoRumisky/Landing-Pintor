@@ -1,26 +1,34 @@
-.content{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-}
-
-.article{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.article p{
-    margin: 20px 150px;
-}
-
 .title{
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title h1{
     font-weight: 900;
     color: #1976d2;
     font-size: 64px;
     line-height: 1;
     
+}
+
+.container {
+	background: #0f9bf6;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.content {
+	text-align: center;
+	font-size: 2em;
+	color: rgba(255, 255, 255, 0.8);
+	padding: 40px;
+}
+
+.content p {
+	color: white;
+    margin: 0 100px;
 }
 
 .waves {
