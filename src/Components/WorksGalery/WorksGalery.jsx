@@ -3,18 +3,18 @@ import s from "../WorksGalery/WorksGalery.module.css"
 
 const slides = [
     {
-      title: "Machu Picchu",
-      subtitle: "Peru",
-      description: "Adventure is never far away",
+      title: "Carlos Paz",
+      subtitle: "Cordoba",
+      description: "Pintura",
       image:
-        "https://images.unsplash.com/photo-1571771019784-3ff35f4f4277?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=800&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+        "https://i.ibb.co/K5Rv5Th/Imagen-de-Whats-App-2023-09-03-a-las-20-46-13.jpg"
     },
     {
-      title: "Chamonix",
-      subtitle: "France",
-      description: "Let your dreams come true",
+      title: "Alta Gracia",
+      subtitle: "Cordoba",
+      description: "Revestimiento y pintura",
       image:
-        "https://images.unsplash.com/photo-1581836499506-4a660b39478a?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=800&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+        "https://i.ibb.co/PhbjNMc/Imagen-de-Whats-App-2023-09-03-a-las-20-39-47.jpg"
     },
     {
       title: "Mimisa Rocks",
@@ -104,6 +104,13 @@ const slides = [
   function Slide({ slide, offset }) {
     const active = offset === 0 ? true : null;
     const ref = useTilt(active);
+
+    // const handleclick = (e) =>{
+    //   e.target.style.width = '50vw';
+    //   e.target.style.height = '50vw';
+    //   e.target.style.display = 'flex';
+    //   console.log(e.target.style)
+    // }
   
     return (
       <div
@@ -116,16 +123,11 @@ const slides = [
         }}
       >
         <div
-          className={s.slideBackground}
-          style={{
-            backgroundImage: `url('${slide.image}')`
-          }}
-        />
-        <div
           className={s.slideContent}
           style={{
             backgroundImage: `url('${slide.image}')`
           }}
+          // onClick={(e)=>handleclick(e)}
         >
           <div className={s.slideContentInner}>
             <h2 className={s.slideTitle}>{slide.title}</h2>

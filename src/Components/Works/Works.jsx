@@ -1,11 +1,14 @@
 import React from 'react'
 import WorksGalery from '../WorksGalery/WorksGalery'
+import s from "../Works/Works.module.css"
 
 export default function Works() {
   return (
     <>
-    <div>Nuestros Trabajos</div>
+    <div className={s.workscontent}>
+    <div className={s.title}>Nuestros Trabajos</div>
     < WorksGalery />
+    </div>
     
     </>
   )

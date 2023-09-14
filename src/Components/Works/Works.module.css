@@ -1,0 +1,13 @@
+.title{
+    font-weight: 900;
+    color: #1976d2;
+    font-size: 64px;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    padding: 120px 0 30px; 
+}
+
+.workscontent{
+    background-color: #dddada8c;;
+}

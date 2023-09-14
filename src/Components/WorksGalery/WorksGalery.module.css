@@ -1,22 +1,28 @@
 .slides {
     display: grid;
     justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 75px;
     .slide {
       grid-area: 1 / -1;
+      box-sizing: border-box;
+      
     }
-  
-    button {
-      appearance: none;
+  }
+
+  .slides button{
+  appearance: none;
+    position: absolute;
       background: transparent;
-      border: none;
-      color: white;
-      position: absolute;
-      font-size: 5rem;
+      border-radius: 50%;
+      border:2px solid black;
+      color: rgb(0, 0, 0);
+      font-size: 4rem;
       width: 5rem;
-      height: 5rem;
-      top: 30%;
+      
       transition: opacity 0.3s;
-      opacity: 0.7;
+      opacity: 0.5;
       z-index: 5;
   
       &:hover {
@@ -26,20 +32,23 @@
       &:focus {
         outline: none;
       }
+
+      &:active{
+        background-color: #1976d2;
+      }
   
       &:first-child {
-        left: -50%;
+        left:27.5%;
       }
       &:last-child {
-        right: -50%;
+        right: 27.5%;
       }
-    }
   }
   
   
   .slideContent {
     width: 30vw;
-    height: 40vw;
+    height: 35vw;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -50,8 +59,7 @@
     align-content: center;
   
     transform-style: preserve-3d;
-    transform: perspective(1000px) translateX(calc(100% * var(--offset)))
-      rotateY(calc(-45deg * var(--dir)));
+    transform: perspective(1500px) translateX(calc(100% * var(--offset))) rotateY(calc(-45deg * var(--dir)));
   }
   
   .slideContentInner {
@@ -81,21 +89,7 @@
     }
   }
   
-  .slideBackground {
-    position: fixed;
-    top: 0;
-    left: -10%;
-    right: -10%;
-    bottom: 0;
-    background-size: cover;
-    background-position: center center;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s linear, transform 0.3s ease-in-out;
-    pointer-events: none;
   
-    transform: translateX(calc(10% * var(--dir)));
-  }
   
   .slide[data-active] {
     z-index: 2;
