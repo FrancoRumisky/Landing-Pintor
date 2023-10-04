@@ -9,16 +9,16 @@ export default function Carrusel() {
     {
       title: "Pintura de piscinas",
       description:
-        "Nullam id dolor id nibh ultricies vehicula ut id elit. Cras mattis consectetur purus sit amet fermentum. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec sed odio dui.",
-      button: "Discover",
+        "es un proceso fundamental para mantener su apariencia y durabilidad a lo largo del tiempo. Implica la aplicación de una pintura específicamente diseñada para piscinas en la superficie interior de la misma. Este procedimiento no solo mejora la estética, sino que también protege la piscina de la corrosión, el desgaste y el crecimiento de algas.",
+      button: "Solicitar presupuesto",
       image: "https://www.maspintura.com/wp-content/uploads/2019/04/piscina-mantenimiento-1200x600.jpg",
       
     },
     {
       title: "Revestimiento de piscinas",
       description:
-        "Nullam id dolor id nibh ultricies vehicula ut id elit. Cras mattis consectetur purus sit amet fermentum. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec sed odio dui.",
-      button: "Discover",
+        "El revestimiento en fibra de piscinas ofrece ventajas como la resistencia a la corrosión, una superficie impermeable y de fácil limpieza, y una vida útil prolongada. También puede ayudar a reparar grietas o daños en la piscina existente, proporcionando una solución efectiva para la renovación de piscinas en mal estado.",
+      button: "Solicitar presupuesto",
       image: "https://fullget.cl/wp-content/uploads/2018/09/8-2.jpg",
       
     },
@@ -26,7 +26,7 @@ export default function Carrusel() {
       title: "pintura en general",
       description:
         "Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Cras justo odio, dapibus ac facilisis.",
-      button: "Read More",
+      button: "Solicitar presupuesto",
       image: "https://www.reformadisimo.es/wp-content/uploads/2019/11/pintar-las-paredes-de-casa.jpg",
       
     },
@@ -44,7 +44,7 @@ export default function Carrusel() {
 					<div className="inner">
 						<h1>{item.title}</h1>
 						<p>{item.description}</p>
-						<button className="btn">{item.button}</button>
+						<button className="btn"><a href="#contact">{item.button}</a></button>
 					</div>
 				</div>
 			))}

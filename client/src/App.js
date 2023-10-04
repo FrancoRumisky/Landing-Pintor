@@ -4,6 +4,7 @@ import Carrusel from "./Components/Slider/Slider";
 import About from "./Components/About/About";
 import Works from "./Components/Works/Works";
 import Contact from "./Components/Contact/Contact";
+import Footer from "./Components/Footer/Footer";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <About />
       <Works />
       <Contact />
+      <Footer />
     </>
   );
 }

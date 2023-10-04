@@ -4,10 +4,11 @@ import s from "../About/About.module.css";
 export default function About() {
   return (
     <>
-      <div className={s.title}>
+      <div className={s.title} id="about">
         <img
-          style={{ width: "120px" }}
-          src="https://previews.123rf.com/images/emcrea14/emcrea142102/emcrea14210200561/164593364-dise%C3%B1o-de-logotipo-de-letras-cc-en-onda-de-agua-dise%C3%B1o-de-logotipo-de-letra-moderna-con-ondas.jpg"
+          style={{ width: "160px", marginTop:"15px"}}
+          src="https://i.ibb.co/sRqdRvF/logo.png"
+          alt="RDpintoresdepiscinas"
         ></img>
         <h1>Sobre Nostros</h1>
       </div>

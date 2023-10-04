@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import s from "../WorksGalery/WorksGalery.module.css"
 
 const slides = [
@@ -7,35 +7,42 @@ const slides = [
       subtitle: "Cordoba",
       description: "Pintura",
       image:
-        "https://i.ibb.co/K5Rv5Th/Imagen-de-Whats-App-2023-09-03-a-las-20-46-13.jpg"
+        "https://i.ibb.co/dPZmLHQ/Imagen4.png"
     },
     {
       title: "Alta Gracia",
       subtitle: "Cordoba",
       description: "Revestimiento y pintura",
       image:
-        "https://i.ibb.co/PhbjNMc/Imagen-de-Whats-App-2023-09-03-a-las-20-39-47.jpg"
+        "https://i.ibb.co/XVsq2wb/Imagen2.png"
     },
     {
-      title: "Mimisa Rocks",
-      subtitle: "Australia",
+      title: "Cuesta Blanca",
+      subtitle: "Cordoba",
       description: "A piece of heaven",
       image:
-        "https://images.unsplash.com/photo-1566522650166-bd8b3e3a2b4b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=800&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+        "https://i.ibb.co/7QWgm71/Imagen1.png"
     },
     {
       title: "Four",
-      subtitle: "Australia",
-      description: "A piece of heaven",
+      subtitle: "Cordoba",
+      description: "Pintura",
       image:
-        "https://images.unsplash.com/flagged/photo-1564918031455-72f4e35ba7a6?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=800&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+        "https://i.ibb.co/HFrfnWH/Imagen3.png"
     },
     {
       title: "Five",
-      subtitle: "Australia",
-      description: "A piece of heaven",
+      subtitle: "Cordoba",
+      description: "Pintura",
       image:
-        "https://images.unsplash.com/photo-1579130781921-76e18892b57b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=800&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+        "https://i.ibb.co/phbKgdH/Imagen5.png"
+    },
+    {
+      title: "B° Ayacucho ",
+      subtitle: "Cordoba",
+      description: "Pintura",
+      image:
+        "https://i.ibb.co/qnj4jNX/Imagen6.png"
     }
   ];
   
@@ -122,7 +129,7 @@ const slides = [
           "--dir": offset === 0 ? 0 : offset > 0 ? 1 : -1
         }}
       >
-        <div
+        <div title="RD pintores de piscinas"
           className={s.slideContent}
           style={{
             backgroundImage: `url('${slide.image}')`

@@ -2,4 +2,11 @@
     display: flex;
     width: 100%;
     justify-content: space-around;
+    
+}
+a:link,
+a:visited,
+a:active {
+  text-decoration: none;
+  color:white
 }

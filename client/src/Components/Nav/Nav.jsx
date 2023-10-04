@@ -11,17 +11,18 @@ export default function Nav() {
         <AppBar position="static" sx={{ flexDirection: "row" }}>
           <img
             style={{ width: "60px" }}
-            src="https://previews.123rf.com/images/emcrea14/emcrea142102/emcrea14210200561/164593364-dise%C3%B1o-de-logotipo-de-letras-cc-en-onda-de-agua-dise%C3%B1o-de-logotipo-de-letra-moderna-con-ondas.jpg"
+            src="https://i.ibb.co/sRqdRvF/logo.png"
+            alt="RDpintoresdepiscinas"
           ></img>
           <div className={s.buttons}>
             <Button variant="">
-              Sobre Nosotros
+              <a href="#about">Sobre Nosotros</a>
             </Button>
             <Button variant="">
-              Trabajos
+              <a href="#works">Trabajos</a>
             </Button>
             <Button variant="">
-              Contacto
+              <a href="#contact">Contacto</a>
             </Button>
           </div>
         </AppBar>
