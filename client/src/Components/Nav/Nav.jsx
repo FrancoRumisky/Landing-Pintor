@@ -12,7 +12,7 @@ export default function Nav() {
           <img
             style={{ width: "60px" }}
             src="https://i.ibb.co/sRqdRvF/logo.png"
-            alt="RDpintoresdepiscinas"
+            alt="RD-pintores-de-piscinas"
           ></img>
           <div className={s.buttons}>
             <Button variant="">
