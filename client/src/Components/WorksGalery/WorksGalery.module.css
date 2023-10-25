@@ -1,120 +1,138 @@
 .slides {
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    overflow-x: hidden;
-    padding: 75px;
-    .slide {
-      grid-area: 1 / -1;
-      box-sizing: border-box;
-      
-    }
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  padding: 75px;
+  .slide {
+    grid-area: 1 / -1;
+    box-sizing: border-box;
   }
+}
 
-  .slides button{
+.slides button {
   appearance: none;
-    position: absolute;
-      background: transparent;
-      border-radius: 50%;
-      border:2px solid black;
-      color: rgb(0, 0, 0);
-      font-size: 4rem;
-      width: 5rem;
-      
-      transition: opacity 0.3s;
-      opacity: 0.5;
-      z-index: 5;
-  
-      &:hover {
-        opacity: 1;
-      }
-  
-      &:focus {
-        outline: none;
-      }
+  position: absolute;
+  background: transparent;
+  border-radius: 50%;
+  border: 2px solid black;
+  color: rgb(0, 0, 0);
+  font-size: 4rem;
+  width: 5rem;
 
-      &:active{
-        background-color: #1976d2;
-      }
-  
-      &:first-child {
-        left:27.5%;
-      }
-      &:last-child {
-        right: 27.5%;
-      }
+  transition: opacity 0.3s;
+  opacity: 0.5;
+  z-index: 5;
+
+  &:hover {
+    opacity: 1;
   }
-  
-  
-  .slideContent {
-    width: 25vw;
-    height: 35vw;
-    background-size: contain;
-    background-position: center center;
-    background-repeat: no-repeat;
-    transition: transform 0.5s ease-in-out;
-    opacity: 0.7;
-  
-    display: grid;
-    align-content: center;
-  
-    transform-style: preserve-3d;
-    transform: perspective(1500px) translateX(calc(100% * var(--offset))) rotateY(calc(-45deg * var(--dir)));
+
+  &:focus {
+    outline: none;
   }
-  
+
+  &:active {
+    background-color: #1976d2;
+  }
+
+  &:first-child {
+    left: 27.5%;
+  }
+  &:last-child {
+    right: 27.5%;
+  }
+}
+
+.slideContent {
+  width: 25vw;
+  height: 35vw;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: transform 0.5s ease-in-out;
+  opacity: 0.7;
+
+  display: grid;
+  align-content: center;
+
+  transform-style: preserve-3d;
+  transform: perspective(1500px) translateX(calc(100% * var(--offset)))
+    rotateY(calc(-45deg * var(--dir)));
+}
+
+.slideContentInner {
+  transform-style: preserve-3d;
+  transform: translateZ(2rem);
+  transition: opacity 0.3s linear;
+  text-shadow: 0 0.1rem 0.2rem #fff;
+  opacity: 0;
+
+  .slideSubtitle,
+  .slideTitle {
+    font-size: 2rem;
+    font-weight: normal;
+    letter-spacing: 0.2ch;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .slideSubtitle::before {
+    content: "— ";
+  }
+
+  .slideDescription {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.2ch;
+  }
+}
+
+.slide[data-active] {
+  z-index: 2;
+  pointer-events: auto;
+
+  .slideBackground {
+    opacity: 0.2;
+    transform: none;
+  }
+
   .slideContentInner {
-    transform-style: preserve-3d;
-    transform: translateZ(2rem);
-    transition: opacity 0.3s linear;
-    text-shadow: 0 0.1rem 0.2rem #fff;
-    opacity: 0;
-  
-    .slideSubtitle,
-    .slideTitle {
-      font-size: 2rem;
-      font-weight: normal;
-      letter-spacing: 0.2ch;
-      text-transform: uppercase;
-      margin: 0;
-    }
-  
-    .slideSubtitle::before {
-      content: "— ";
-    }
-  
-    .slideDescription {
-      margin: 0;
-      font-size: 0.8rem;
-      letter-spacing: 0.2ch;
+    opacity: 1;
+  }
+
+  .slideContent {
+    --x: calc(var(--px) - 0.5);
+    --y: calc(var(--py) - 0.5);
+    opacity: 1;
+
+    transform: perspective(1000px);
+
+    &:hover {
+      transition: none;
+      transform: perspective(1000px) rotateY(calc(var(--x) * 45deg))
+        rotateX(calc(var(--y) * -45deg));
     }
   }
-  
-  
-  
-  .slide[data-active] {
-    z-index: 2;
-    pointer-events: auto;
-  
-    .slideBackground {
-      opacity: 0.2;
-      transform: none;
+}
+
+@media (max-width: 500px) {
+  .slideContent {
+    width: 40vh;
+    height: 65vh;
+  }
+
+  .slides button {
+    &:first-child {
+      left: 0;
     }
-  
-    .slideContentInner {
-      opacity: 1;
-    }
-  
-    .slideContent {
-      --x: calc(var(--px) - 0.5);
-      --y: calc(var(--py) - 0.5);
-      opacity: 1;
-  
-      transform: perspective(1000px);
-  
-      &:hover {
-        transition: none;
-        transform: perspective(1000px) rotateY(calc(var(--x) * 45deg))
-          rotateX(calc(var(--y) * -45deg));
-      }
+    &:last-child {
+      right: 0;
     }
   }
+
+    .slideContentInner .slideSubtitle{
+      font-size: 1.2rem;
+    }
+  
+}

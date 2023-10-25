@@ -10,7 +10,7 @@ export default function Footer() {
         <div className={s.img}> <img
           src="https://i.imgur.com/9wDHVGU.png"
           alt="RD-Pintores-de-piscinas"
-          style={{ width: "120px", height: "120px", margin: "10px 0" }}
+          
         /></div>
        
         <div className={s.contentF}>

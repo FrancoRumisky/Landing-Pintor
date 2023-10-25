@@ -6,7 +6,6 @@ export default function About() {
     <>
       <div className={s.title} id="about">
         <img
-          style={{ width: "160px", marginTop:"15px"}}
           src="https://i.imgur.com/9wDHVGU.png"
           alt="RDpintoresdepiscinas"
         ></img>

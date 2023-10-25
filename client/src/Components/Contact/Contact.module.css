@@ -31,3 +31,13 @@
     color: red;
     height: 20px;
   }
+
+  @media(max-width:500px){
+    .title{
+        font-size: 52px;
+        padding: 50px 0 30px;
+    }
+    .form{
+        width: 85%;
+    }
+  }

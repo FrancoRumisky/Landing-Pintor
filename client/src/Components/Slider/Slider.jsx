@@ -25,7 +25,7 @@ export default function Carrusel() {
     {
       title: "pintura en general",
       description:
-        "Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Cras justo odio, dapibus ac facilisis.",
+        "El trabajo de pintura en general requiere habilidades técnicas, paciencia y atención al detalle para lograr resultados profesionales y satisfactorios. Ya sea en interiores o exteriores, la pintura desempeña un papel importante en la protección y la mejora estética de edificios, muebles y otras superficies.",
       button: "Solicitar presupuesto",
       image: "https://www.reformadisimo.es/wp-content/uploads/2019/11/pintar-las-paredes-de-casa.jpg",
       
@@ -37,6 +37,7 @@ export default function Carrusel() {
       <Slider className="slider-wrapper" infinite="true" autoplay="6000" >
 			{content.map((item, index) => (
 				<div
+        title="pintor de piscinas"
 					key={index}
 					className="slider-content"
 					style={{ background: `url('${item.image}') no-repeat center center` }}
@@ -44,7 +45,7 @@ export default function Carrusel() {
 					<div className="inner">
 						<h1>{item.title}</h1>
 						<p>{item.description}</p>
-						<button className="btn"><a href="#contact">{item.button}</a></button>
+						<button className="btn"><a href="https://wa.me/qr/PSX7DCDHBNEQN1" target="blank">{item.button}</a></button>
 					</div>
 				</div>
 			))}

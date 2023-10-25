@@ -10,3 +10,9 @@ a:active {
   text-decoration: none;
   color:white
 }
+
+@media (max-width:500px){
+  .buttons a {
+    font-size: small;
+  }
+}
