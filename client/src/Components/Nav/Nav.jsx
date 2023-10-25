@@ -11,7 +11,7 @@ export default function Nav() {
         <AppBar position="static" sx={{ flexDirection: "row" }}>
           <img
             style={{ width: "60px" }}
-            src="https://i.ibb.co/sRqdRvF/logo.png"
+            src="https://i.imgur.com/9wDHVGU.png"
             alt="RD-pintores-de-piscinas"
           ></img>
           <div className={s.buttons}>

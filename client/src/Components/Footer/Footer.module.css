@@ -33,3 +33,7 @@
     display: flex;
     justify-content: center;
 }
+
+.copy a{
+    color:#0f9bf6;
+}

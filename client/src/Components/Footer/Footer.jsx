@@ -8,7 +8,7 @@ export default function Footer() {
     <>
       <div className={s.container}>
         <div className={s.img}> <img
-          src="https://i.ibb.co/sRqdRvF/logo.png"
+          src="https://i.imgur.com/9wDHVGU.png"
           alt="RD-Pintores-de-piscinas"
           style={{ width: "120px", height: "120px", margin: "10px 0" }}
         /></div>
@@ -29,12 +29,12 @@ export default function Footer() {
           <h2>Contacto</h2>
 
           <span>
-            <WhatsAppIcon />
+            <WhatsAppIcon style={{color:"green"}} />
             <p>3513185531</p>
           </span>
           <span>
-            <MailOutlineIcon />
-            <p>rdpintordepiscinas</p>@gmail.com
+            <MailOutlineIcon style={{color:"red"}} />
+            <p>rdpintordepiscinas@gmail.com</p>
           </span>
         </div>
       </div>

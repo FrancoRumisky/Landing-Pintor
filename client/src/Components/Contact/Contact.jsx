@@ -102,6 +102,7 @@ export default function Contact() {
     <>
       <div id="contact" className={s.title}>Contacto</div>
       <div className={s.formContent}>
+        <p>Solicita tu presupuesto sin cargo</p>
         <div className={s.form}>
         <form
           ref={form}

@@ -7,42 +7,42 @@ const slides = [
       subtitle: "Cordoba",
       description: "Pintura",
       image:
-        "https://i.ibb.co/dPZmLHQ/Imagen4.png"
+        "https://i.imgur.com/XLVG9DT.png"
     },
     {
       title: "Alta Gracia",
       subtitle: "Cordoba",
       description: "Revestimiento y pintura",
       image:
-        "https://i.ibb.co/XVsq2wb/Imagen2.png"
+        "https://i.imgur.com/YjMltVH.png"
     },
     {
       title: "Cuesta Blanca",
       subtitle: "Cordoba",
-      description: "A piece of heaven",
+      description: "Pintura",
       image:
-        "https://i.ibb.co/7QWgm71/Imagen1.png"
+        "https://i.imgur.com/mHYtZDl.png"
     },
     {
-      title: "Four",
+      title: "Villa Allende",
       subtitle: "Cordoba",
       description: "Pintura",
       image:
-        "https://i.ibb.co/HFrfnWH/Imagen3.png"
+        "https://i.imgur.com/mvhpAuh.png"
     },
     {
-      title: "Five",
+      title: "Colonia Tirolesa",
       subtitle: "Cordoba",
       description: "Pintura",
       image:
-        "https://i.ibb.co/phbKgdH/Imagen5.png"
+        "https://i.imgur.com/4a6sGPh.png"
     },
     {
       title: "B° Ayacucho ",
       subtitle: "Cordoba",
       description: "Pintura",
       image:
-        "https://i.ibb.co/qnj4jNX/Imagen6.png"
+        "https://i.imgur.com/SyH3Gjp.png"
     }
   ];
   
