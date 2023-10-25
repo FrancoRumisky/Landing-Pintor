@@ -116,7 +116,7 @@
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 720px) {
   .slideContent {
     width: 40vh;
     height: 65vh;

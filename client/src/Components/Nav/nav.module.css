@@ -11,7 +11,7 @@ a:active {
   color:white
 }
 
-@media (max-width:500px){
+@media (max-width:720px){
   .buttons a {
     font-size: small;
   }

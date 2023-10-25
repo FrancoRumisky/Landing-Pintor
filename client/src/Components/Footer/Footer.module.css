@@ -45,7 +45,7 @@
     color:#0f9bf6;
 }
 
-@media (max-width: 500px){
+@media (max-width: 720px){
     .container{
         flex-direction: column;
         align-items: center;
