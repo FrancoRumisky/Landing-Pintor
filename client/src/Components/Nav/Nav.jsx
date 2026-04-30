@@ -9,7 +9,7 @@ export default function Nav() {
   return (
     <>
       <Box>
-        <AppBar position="static" sx={{ flexDirection: "row" }}>
+        <AppBar position="static" sx={{ flexDirection: "row", backgroundColor:"#00bcd4;"}}>
           <img
           className={s.img}
             src= {logo}

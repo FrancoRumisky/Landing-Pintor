@@ -12,6 +12,7 @@ import GoogleReviews from "./Components/GoogleReviews/GoogleReviews"
 function App() {
   return (
     <div className="App">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"></link>
       <Helmet>
           <title>Pintor de Piscinas en RD | Calidad y Precio Garantizado</title>
   <meta name="description" content="Servicios profesionales de pintura de piscinas en República Dominicana. Presupuesto sin cargo. Llamanos hoy." />
@@ -38,6 +39,11 @@ function App() {
       </Helmet>
       <Nav />
       <Carrusel />
+      <section className="stats">
+  <div>+30 años de experiencia</div>
+  <div>+200 piscinas renovadas</div>
+  <div>Materiales de alta calidad</div>
+</section>
       <About />
       <Works />
       <GoogleReviews />
