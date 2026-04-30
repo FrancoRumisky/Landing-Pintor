@@ -1,12 +1,13 @@
 import React from "react";
 import s from "../About/About.module.css";
+import logo from "../../assets/img/logo.webp"
 
 export default function About() {
   return (
     <>
       <div className={s.title} id="about">
         <img
-          src="https://i.imgur.com/9wDHVGU.png"
+          src={logo}
           alt="RDpintoresdepiscinas"
         ></img>
         <h1>Sobre Nostros</h1>

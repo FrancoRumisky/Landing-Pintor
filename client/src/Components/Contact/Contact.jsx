@@ -212,7 +212,7 @@ export default function Contact() {
               </Alert>
             )}
           </Snackbar>
-        </form>
+          </form>
         </div>
       </div>
     </>

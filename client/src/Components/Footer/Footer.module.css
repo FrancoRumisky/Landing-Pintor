@@ -44,6 +44,27 @@
 .copy a{
     color:#0f9bf6;
 }
+.contactIcons {
+    display: flex;
+    flex-direction: row;
+    /* Alinear los iconos en fila */
+    flex-wrap: wrap;
+    /* Permitir que los elementos se ajusten a la siguiente línea */
+    justify-content: space-around;
+    /* Espaciar los iconos uniformemente */
+    margin-top: 10px;
+    /* Espaciado superior opcional */
+}
+
+.contactIcons span {
+    display: flex;
+    flex-direction: column;
+    /* Mantener el icono y el texto en columna */
+    align-items: center;
+    /* Centrar los elementos */
+    margin: 10px;
+    /* Espacio entre los iconos */
+}
 
 @media (max-width: 720px){
     .container{

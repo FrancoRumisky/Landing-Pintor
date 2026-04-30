@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import s from "./nav.module.css";
+import logo from "../../assets/img/logo.webp"
 
 export default function Nav() {
   return (
@@ -10,9 +11,9 @@ export default function Nav() {
       <Box>
         <AppBar position="static" sx={{ flexDirection: "row" }}>
           <img
-            style={{ width: "60px" }}
-            src="https://i.imgur.com/9wDHVGU.png"
-            alt="RD-pintores-de-piscinas"
+          className={s.img}
+            src= {logo}
+            alt="pintores de piscinas"
           ></img>
           <div className={s.buttons}>
             <Button variant="">

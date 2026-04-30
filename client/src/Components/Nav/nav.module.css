@@ -4,6 +4,12 @@
     justify-content: space-around;
     
 }
+
+.img{
+  width: 60px;
+  height: auto;
+}
+
 a:link,
 a:visited,
 a:active {

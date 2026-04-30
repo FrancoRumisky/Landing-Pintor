@@ -15,11 +15,12 @@
     "react": "^18.2.0",
     "react-animated-slider": "^1.1.4",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.47.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://rdpintordepiscinas.com/",
+  "homepage": "https://www.rdpintordepiscinas.com/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
