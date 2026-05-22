@@ -10,34 +10,13 @@ const WhatsAppButton = () => {
     "Hola, vi su web y necesito presupuesto para pintura de piscina en Córdoba"
   );
 
-  const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
-
-const handleClick = (e) => {
-
-  e.preventDefault();
-
-  if (window.gtag) {
-
-    console.log("Evento enviado");
-
-    window.gtag('event', 'whatsapp_click', {
-      event_category: 'contact',
-      event_label: 'WhatsApp Button',
-    });
-
-  }
-
-  setTimeout(() => {
-    window.open(whatsappUrl, "_blank");
-  }, 500);
-
-};
-
   return (
     <Tooltip title="Solicitar presupuesto" placement="left">
       <Fab
         aria-label="whatsapp"
-        onClick={handleClick}
+        href={`https://wa.me/${phone}?text=${message}`}
+        target="_blank"
+        rel="noopener noreferrer"
         sx={{
           position: "fixed",
           bottom: 20,
