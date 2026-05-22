@@ -12,22 +12,24 @@ const WhatsAppButton = () => {
 
   const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
 
-  const handleClick = (e) => {
+ const handleClick = (e) => {
 
   e.preventDefault();
 
-  console.log(window.gtag);
+  if (typeof gtag !== "undefined") {
 
-  if (window.gtag) {
-    window.gtag('event', 'whatsapp_click', {
+    console.log("Evento enviado");
+
+    gtag('event', 'whatsapp_click', {
       event_category: 'contact',
       event_label: 'WhatsApp Button',
     });
+
   }
 
   setTimeout(() => {
     window.open(whatsappUrl, "_blank");
-  }, 300);
+  }, 500);
 
 };
 
