@@ -10,15 +10,24 @@ const message = encodeURIComponent(
 "Hola, vi su web y necesito presupuesto para pintura de piscina en Córdoba"
 );
 
+const whatsappUrl = https://wa.me/${phone}?text=${message};
+
 // NUEVO
-const handleClick = () => {
+const handleClick = (e) => {
+
+e.preventDefault();
 
 if (window.gtag) {
   window.gtag('event', 'whatsapp_click', {
     event_category: 'contact',
-    event_label: 'WhatsApp Button'
+    event_label: 'WhatsApp Button',
   });
 }
+
+// Pequeño delay para asegurar envío
+setTimeout(() => {
+  window.open(whatsappUrl, "_blank");
+}, 300);
 
 };
 
@@ -26,12 +35,11 @@ return (
 
 <Fab
 aria-label="whatsapp"
-href={https://wa.me/${phone}?text=${message}}
-target="_blank"
-rel="noopener noreferrer"
 
-    // NUEVO
+    // ELIMINAR href
     onClick={handleClick}
+
+    rel="noopener noreferrer"
 
     sx={{
       position: "fixed",
