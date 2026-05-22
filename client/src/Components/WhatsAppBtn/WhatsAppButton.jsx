@@ -14,20 +14,22 @@ const WhatsAppButton = () => {
 
   const handleClick = (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    if (window.gtag) {
-      window.gtag('event', 'whatsapp_click', {
-        event_category: 'contact',
-        event_label: 'WhatsApp Button',
-      });
-    }
+  console.log(window.gtag);
 
-    setTimeout(() => {
-      window.open(whatsappUrl, "_blank");
-    }, 300);
+  if (window.gtag) {
+    window.gtag('event', 'whatsapp_click', {
+      event_category: 'contact',
+      event_label: 'WhatsApp Button',
+    });
+  }
 
-  };
+  setTimeout(() => {
+    window.open(whatsappUrl, "_blank");
+  }, 300);
+
+};
 
   return (
     <Tooltip title="Solicitar presupuesto" placement="left">
