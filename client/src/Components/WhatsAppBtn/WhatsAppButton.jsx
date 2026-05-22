@@ -12,15 +12,15 @@ const WhatsAppButton = () => {
 
   const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
 
- const handleClick = (e) => {
+const handleClick = (e) => {
 
   e.preventDefault();
 
-  if (typeof gtag !== "undefined") {
+  if (window.gtag) {
 
     console.log("Evento enviado");
 
-    gtag('event', 'whatsapp_click', {
+    window.gtag('event', 'whatsapp_click', {
       event_category: 'contact',
       event_label: 'WhatsApp Button',
     });
