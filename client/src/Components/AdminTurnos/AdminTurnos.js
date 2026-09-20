@@ -125,7 +125,7 @@ export default function AdminTurnos() {
     if (!window.google?.accounts?.oauth2) return;
     tokenClient.current = window.google.accounts.oauth2.initTokenClient({
       client_id: GOOGLE_CLIENT_ID,
-      scope: `openid email profile ${CALENDAR_SCOPE}`,
+      scope: `https://www.googleapis.com/auth/userinfo.email ${CALENDAR_SCOPE}`,
       callback: async (response) => {
         if (response.error) {
           setAuthError(response.error_description || "Google rechazó la autorización.");
