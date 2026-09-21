@@ -4,249 +4,37 @@ import "./AdminTurnos.css";
 const GOOGLE_CLIENT_ID = "74649942161-hnf3l457o5386vfe52nic8imja77l1u7.apps.googleusercontent.com";
 const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar";
 const ALLOWED_EMAILS = ["framqoo@gmail.com", "danielrumisky@gmail.com"];
-const GOOGLE_SCRIPT_ID = "google-gsi-script";
-const CALENDAR_ID = "primary";
 const TIME_ZONE = "America/Argentina/Cordoba";
+const CALENDAR_ID = "primary";
+const SCRIPT_ID = "google-gsi-script";
+const today = () => new Date().toISOString().slice(0, 10);
+const emptyForm = (date = today()) => ({ client: "", service: "Pintura de pileta", startDate: date, endDate: date, start: "09:00", end: "17:00", address: "", notes: "" });
 
-const emptyForm = (date) => ({ client: "", service: "Pintura de pileta", date, start: "09:00", end: "17:00", address: "", notes: "" });
-
-function loadGoogleIdentityScript() {
-  return new Promise((resolve, reject) => {
-    if (window.google?.accounts?.oauth2) return resolve();
-    const existing = document.getElementById(GOOGLE_SCRIPT_ID);
-    if (existing) {
-      if (window.google?.accounts?.oauth2) return resolve();
-      const check = () => window.google?.accounts?.oauth2 ? resolve() : reject(new Error("Google Identity Services cargó, pero no está disponible."));
-      existing.addEventListener("load", check, { once: true });
-      existing.addEventListener("error", () => reject(new Error("No se pudo cargar Google Identity Services.")), { once: true });
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = GOOGLE_SCRIPT_ID;
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => window.google?.accounts?.oauth2 ? resolve() : reject(new Error("Google Identity Services cargó, pero no está disponible."));
-    script.onerror = () => reject(new Error("No se pudo cargar Google Identity Services."));
-    document.head.appendChild(script);
-  });
-}
-
-function monthRange(date) {
-  const base = new Date(`${date}T12:00:00`);
-  return { start: new Date(base.getFullYear(), base.getMonth(), 1), end: new Date(base.getFullYear(), base.getMonth() + 1, 1) };
-}
-
-function eventToForm(event) {
-  const start = event.start?.dateTime || "";
-  const end = event.end?.dateTime || "";
-  return {
-    client: event.summary || "",
-    service: event.extendedProperties?.private?.service || "Pintura de pileta",
-    date: start.slice(0, 10), start: start.slice(11, 16), end: end.slice(11, 16),
-    address: event.location || "", notes: event.description || ""
-  };
-}
-
-function calendarEvent(form) {
-  return {
-    summary: form.client, location: form.address || undefined, description: form.notes || "",
-    start: { dateTime: `${form.date}T${form.start}:00`, timeZone: TIME_ZONE },
-    end: { dateTime: `${form.date}T${form.end}:00`, timeZone: TIME_ZONE },
-    extendedProperties: { private: { service: form.service, source: "rd-pintores-admin" } }
-  };
-}
-
-async function googleFetch(path, token, options = {}) {
-  const response = await fetch(`https://www.googleapis.com/calendar/v3${path}`, {
-    ...options,
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(options.headers || {}) }
-  });
-  if (!response.ok) throw new Error(`Google Calendar (${response.status}): ${await response.text()}`);
-  if (response.status === 204) return null;
-  return response.json();
-}
+function loadGoogle() { return new Promise((resolve, reject) => { if (window.google?.accounts?.oauth2) return resolve(); let script = document.getElementById(SCRIPT_ID); if (!script) { script = document.createElement("script"); script.id = SCRIPT_ID; script.src = "https://accounts.google.com/gsi/client"; script.async = true; script.defer = true; document.head.appendChild(script); } const check = () => window.google?.accounts?.oauth2 ? resolve() : reject(new Error("Google Identity Services no está disponible.")); script.addEventListener("load", check, { once: true }); script.addEventListener("error", () => reject(new Error("No se pudo cargar Google.")), { once: true }); setTimeout(() => { if (window.google?.accounts?.oauth2) resolve(); }, 1500); }); }
+function range(date) { const d = new Date(`${date}T12:00:00`); return { start: new Date(d.getFullYear(), d.getMonth(), 1), end: new Date(d.getFullYear(), d.getMonth() + 1, 1) }; }
+function mapsUrl(address) { return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`; }
+function eventToForm(e) { const s = e.start?.dateTime || "", end = e.end?.dateTime || ""; return { client: e.summary || "", service: e.extendedProperties?.private?.service || "Pintura de pileta", startDate: s.slice(0, 10), endDate: end.slice(0, 10) || s.slice(0, 10), start: s.slice(11, 16), end: end.slice(11, 16), address: e.location || "", notes: e.description || "" }; }
+function toEvent(f) { return { summary: f.client, location: f.address || undefined, description: f.notes || "", start: { dateTime: `${f.startDate}T${f.start}:00`, timeZone: TIME_ZONE }, end: { dateTime: `${f.endDate}T${f.end}:00`, timeZone: TIME_ZONE }, extendedProperties: { private: { service: f.service, source: "rd-pintores-admin" } } }; }
+async function api(path, token, options = {}) { const r = await fetch(`https://www.googleapis.com/calendar/v3${path}`, { ...options, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(options.headers || {}) } }); if (!r.ok) throw new Error(`Google Calendar (${r.status}): ${await r.text()}`); return r.status === 204 ? null : r.json(); }
 
 export default function AdminTurnos() {
-  const today = new Date().toISOString().slice(0, 10);
-  const [accessToken, setAccessToken] = useState(null);
-  const [userEmail, setUserEmail] = useState("");
-  const [authError, setAuthError] = useState("");
-  const [googleReady, setGoogleReady] = useState(false);
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [selectedDate, setSelectedDate] = useState(today);
-  const [form, setForm] = useState(emptyForm(today));
-  const [editingId, setEditingId] = useState(null);
-  const tokenClient = useRef(null);
+  const [token, setToken] = useState(null), [email, setEmail] = useState(""), [error, setError] = useState(""), [ready, setReady] = useState(false), [events, setEvents] = useState([]), [loading, setLoading] = useState(false), [message, setMessage] = useState(""), [selectedDate, setSelectedDate] = useState(today()), [form, setForm] = useState(emptyForm()), [editingId, setEditingId] = useState(null), [modal, setModal] = useState(false);
+  const client = useRef(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    const init = async () => {
-      try {
-        setAuthError("");
-        await loadGoogleIdentityScript();
-        if (cancelled) return;
-        tokenClient.current = window.google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: `https://www.googleapis.com/auth/userinfo.email ${CALENDAR_SCOPE}`,
-          callback: async (response) => {
-            if (response.error) {
-              setAuthError(response.error_description || response.error || "Google rechazó la autorización.");
-              return;
-            }
-            try {
-              const info = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${response.access_token}` } });
-              if (!info.ok) throw new Error(`No se pudo consultar la cuenta de Google (${info.status}).`);
-              const profile = await info.json();
-              const email = (profile.email || "").toLowerCase();
-              if (!ALLOWED_EMAILS.includes(email)) {
-                window.google.accounts.oauth2.revoke(response.access_token);
-                setAuthError(`La cuenta ${email || "seleccionada"} no está autorizada para esta agenda.`);
-                return;
-              }
-              setUserEmail(email);
-              setAccessToken(response.access_token);
-              setAuthError("");
-            } catch (error) {
-              setAuthError(error.message || "No se pudo verificar la cuenta de Google.");
-            }
-          }
-        });
-        setGoogleReady(true);
-      } catch (error) {
-        if (!cancelled) setAuthError(error.message || "No se pudo cargar Google Identity Services.");
-      }
-    };
-    init();
-    return () => { cancelled = true; };
-  }, []);
-
-  const requestLogin = () => {
-    setAuthError("");
-    if (!tokenClient.current || !googleReady) {
-      setAuthError("Google todavía está cargando. Esperá un momento y volvé a intentar.");
-      return;
-    }
-    try { tokenClient.current.requestAccessToken({ prompt: "select_account" }); }
-    catch (error) { setAuthError(error.message || "No se pudo abrir el inicio de sesión de Google."); }
-  };
-
-  const logout = () => {
-    if (accessToken && window.google?.accounts?.oauth2) window.google.accounts.oauth2.revoke(accessToken);
-    setAccessToken(null); setUserEmail(""); setEvents([]); setMessage(""); setAuthError("");
-  };
-
-  const loadEvents = async () => {
-    if (!accessToken) return;
-    setLoading(true); setMessage("");
-    try {
-      const { start, end } = monthRange(selectedDate);
-      const params = new URLSearchParams({ timeMin: start.toISOString(), timeMax: end.toISOString(), singleEvents: "true", orderBy: "startTime", maxResults: "2500" });
-      const data = await googleFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events?${params}`, accessToken);
-      setEvents(data.items || []);
-    } catch (error) { setMessage(error.message); }
-    finally { setLoading(false); }
-  };
-
-  useEffect(() => { if (accessToken) loadEvents(); }, [accessToken, selectedDate.slice(0, 7)]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const days = useMemo(() => {
-    const result = [], base = new Date(`${selectedDate}T12:00:00`);
-    base.setDate(1);
-    const year = base.getFullYear(), month = base.getMonth(), firstDay = (base.getDay() + 6) % 7, count = new Date(year, month + 1, 0).getDate();
-    for (let i = 0; i < firstDay; i += 1) result.push(null);
-    for (let day = 1; day <= count; day += 1) result.push(`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
-    return result;
-  }, [selectedDate]);
-
-  const dayEvents = events.filter((event) => (event.start?.dateTime || "").slice(0, 10) === selectedDate).sort((a, b) => (a.start?.dateTime || "").localeCompare(b.start?.dateTime || ""));
+  useEffect(() => { let cancelled = false; loadGoogle().then(() => { if (cancelled) return; client.current = window.google.accounts.oauth2.initTokenClient({ client_id: GOOGLE_CLIENT_ID, scope: `https://www.googleapis.com/auth/userinfo.email ${CALENDAR_SCOPE}`, callback: async response => { if (response.error) return setError(response.error_description || response.error); try { const r = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${response.access_token}` } }); const profile = await r.json(); const user = (profile.email || "").toLowerCase(); if (!ALLOWED_EMAILS.includes(user)) { window.google.accounts.oauth2.revoke(response.access_token); return setError(`La cuenta ${user} no está autorizada.`); } setEmail(user); localStorage.setItem("rdp-admin-email", user); setToken(response.access_token); setError(""); } catch (e) { setError(e.message); } } }); setReady(true); const saved = localStorage.getItem("rdp-admin-email"); if (saved && ALLOWED_EMAILS.includes(saved)) setEmail(saved); }).catch(e => setError(e.message)); return () => { cancelled = true; }; }, []);
+  const login = () => { setError(""); if (!client.current) return setError("Google todavía está cargando."); client.current.requestAccessToken({ prompt: email ? "" : "select_account" }); };
+  const logout = () => { if (token) window.google?.accounts?.oauth2?.revoke(token); setToken(null); setEmail(""); localStorage.removeItem("rdp-admin-email"); setEvents([]); };
+  const loadEvents = async () => { if (!token) return; setLoading(true); try { const { start, end } = range(selectedDate); const p = new URLSearchParams({ timeMin: start.toISOString(), timeMax: end.toISOString(), singleEvents: "true", orderBy: "startTime", maxResults: "2500" }); const data = await api(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events?${p}`, token); setEvents(data.items || []); } catch (e) { setMessage(e.message); } finally { setLoading(false); } };
+  useEffect(() => { if (token) loadEvents(); }, [token, selectedDate.slice(0, 7)]); // eslint-disable-line react-hooks/exhaustive-deps
+  const days = useMemo(() => { const d = new Date(`${selectedDate}T12:00:00`); const y = d.getFullYear(), m = d.getMonth(), first = (new Date(y, m, 1).getDay() + 6) % 7, count = new Date(y, m + 1, 0).getDate(); return [...Array(first).fill(null), ...Array.from({ length: count }, (_, i) => `${y}-${String(m + 1).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}`)]; }, [selectedDate]);
+  const occupied = (date) => events.some(e => { const s = (e.start?.dateTime || "").slice(0, 10), f = (e.end?.dateTime || s).slice(0, 10); return s && date >= s && date <= f; });
+  const dayEvents = events.filter(e => { const s = (e.start?.dateTime || "").slice(0, 10), f = (e.end?.dateTime || s).slice(0, 10); return selectedDate >= s && selectedDate <= f; }).sort((a, b) => (a.start?.dateTime || "").localeCompare(b.start?.dateTime || ""));
   const monthLabel = new Date(`${selectedDate.slice(0, 7)}-01T12:00:00`).toLocaleDateString("es-AR", { month: "long", year: "numeric" });
-
-  function updateField(event) { setForm({ ...form, [event.target.name]: event.target.value }); }
-  function selectDay(date) { if (!date) return; setSelectedDate(date); setForm((current) => ({ ...current, date })); setMessage(""); }
-  function resetForm() { setEditingId(null); setForm(emptyForm(selectedDate)); }
-  function editEvent(event) { setEditingId(event.id); setForm(eventToForm(event)); setMessage(""); }
-
-  async function saveTurno(event) {
-    event.preventDefault();
-    if (!accessToken || !form.client.trim() || !form.date) return;
-    if (form.end <= form.start) { setMessage("La hora de finalización debe ser posterior a la de inicio."); return; }
-    setLoading(true); setMessage("");
-    try {
-      const payload = calendarEvent(form);
-      if (editingId) await googleFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${encodeURIComponent(editingId)}`, accessToken, { method: "PUT", body: JSON.stringify(payload) });
-      else await googleFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events`, accessToken, { method: "POST", body: JSON.stringify(payload) });
-      await loadEvents(); setSelectedDate(form.date); resetForm(); setMessage(editingId ? "Turno actualizado." : "Turno creado en Google Calendar.");
-    } catch (error) { setMessage(error.message); }
-    finally { setLoading(false); }
-  }
-
-  async function deleteTurno(id) {
-    if (!window.confirm("¿Eliminar este turno de Google Calendar?")) return;
-    setLoading(true); setMessage("");
-    try {
-      await googleFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${encodeURIComponent(id)}`, accessToken, { method: "DELETE" });
-      setEvents((current) => current.filter((item) => item.id !== id));
-      if (editingId === id) resetForm();
-      setMessage("Turno eliminado.");
-    } catch (error) { setMessage(error.message); }
-    finally { setLoading(false); }
-  }
-
-  if (!accessToken) return (
-    <main className="admin-turnos admin-login">
-      <section className="login-card">
-        <span className="admin-eyebrow">RD PINTORES</span>
-        <h1>Agenda de turnos</h1>
-        <p>Ingresá con una cuenta autorizada para administrar los trabajos.</p>
-        <button className="admin-primary google-login" onClick={requestLogin} disabled={!googleReady}>
-          {!googleReady ? "Cargando Google..." : "Continuar con Google"}
-        </button>
-        {authError && <p className="auth-error">{authError}</p>}
-        <button className="admin-secondary" onClick={() => { window.location.href = "/"; }}>Volver al sitio</button>
-      </section>
-    </main>
-  );
-
-  return (
-    <main className="admin-turnos">
-      <header className="admin-header">
-        <div><span className="admin-eyebrow">RD PINTORES</span><h1>Agenda de turnos</h1><p>Google Calendar · {userEmail}</p></div>
-        <div className="admin-header-actions"><button className="admin-secondary" onClick={logout}>Cerrar sesión</button><button className="admin-secondary" onClick={() => { window.location.href = "/"; }}>Volver al sitio</button></div>
-      </header>
-      {message && <div className="admin-message">{message}</div>}
-      <section className="admin-layout">
-        <div className="calendar-card">
-          <div className="calendar-toolbar">
-            <button onClick={() => setSelectedDate(today)}>Hoy</button>
-            <h2>{monthLabel}</h2>
-            <div>
-              <button onClick={() => { const d = new Date(`${selectedDate}T12:00:00`); d.setMonth(d.getMonth() - 1); setSelectedDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`); }}>‹</button>
-              <button onClick={() => { const d = new Date(`${selectedDate}T12:00:00`); d.setMonth(d.getMonth() + 1); setSelectedDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`); }}>›</button>
-            </div>
-          </div>
-          <div className="weekdays">{["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((d) => <span key={d}>{d}</span>)}</div>
-          <div className="calendar-grid">{days.map((date, index) => <button key={index} className={`calendar-day ${date === selectedDate ? "selected" : ""} ${!date ? "empty" : ""}`} onClick={() => selectDay(date)}>{date && <><strong>{Number(date.slice(-2))}</strong>{events.some((item) => (item.start?.dateTime || "").slice(0, 10) === date) && <i />}</>}</button>)}</div>
-        </div>
-        <aside className="day-card">
-          <div className="day-heading"><div><span>TURNOS DEL DÍA</span><h2>{new Date(`${selectedDate}T12:00:00`).toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}</h2></div><button className="admin-primary" onClick={resetForm}>+ Nuevo</button></div>
-          {loading && <p className="empty-state">Sincronizando...</p>}
-          {!loading && dayEvents.length === 0 && <p className="empty-state">No hay trabajos agendados para este día.</p>}
-          {dayEvents.map((turno) => <article className="appointment" key={turno.id}><div className="appointment-time">{turno.start.dateTime.slice(11, 16)}<small>{turno.end?.dateTime?.slice(11, 16)}</small></div><div className="appointment-info"><h3>{turno.summary}</h3><p>{turno.extendedProperties?.private?.service || "Trabajo"}</p><span>{turno.location || "Sin dirección"}</span><div><button onClick={() => editEvent(turno)}>Editar</button><button onClick={() => deleteTurno(turno.id)}>Eliminar</button></div></div></article>)}
-        </aside>
-      </section>
-      <form className="appointment-form" onSubmit={saveTurno}>
-        <h2>{editingId ? "Editar turno" : "Nuevo turno"}</h2>
-        <div className="form-grid">
-          {[[ "client", "Cliente", "text" ], [ "address", "Dirección", "text" ], [ "date", "Fecha", "date" ], [ "start", "Inicio", "time" ], [ "end", "Fin", "time" ]].map(([name, label, type]) => <label key={name}>{label}<input required={name === "client" || name === "date"} name={name} type={type} value={form[name]} onChange={updateField} /></label>)}
-          <label>Servicio<select name="service" value={form.service} onChange={updateField}><option>Pintura de pileta</option><option>Reparación</option><option>Enfibrado</option><option>Impermeabilización</option><option>Bombas y filtros</option><option>Otro</option></select></label>
-          <label className="full">Observaciones<textarea name="notes" value={form.notes} onChange={updateField} rows="3" /></label>
-        </div>
-        <div className="form-actions"><button type="button" className="admin-secondary" onClick={resetForm}>Limpiar</button><button className="admin-primary" type="submit" disabled={loading}>{editingId ? "Guardar cambios" : "Guardar turno"}</button></div>
-        <p className="mvp-note">Los turnos se guardan y sincronizan directamente con el Google Calendar de la cuenta autorizada.</p>
-      </form>
-    </main>
-  );
+  const openNew = () => { setEditingId(null); setForm(emptyForm(selectedDate)); setModal(true); setMessage(""); };
+  const edit = e => { setEditingId(e.id); setForm(eventToForm(e)); setModal(true); setMessage(""); };
+  const save = async e => { e.preventDefault(); if (!form.client.trim() || form.endDate < form.startDate || (form.endDate === form.startDate && form.end <= form.start)) return setMessage("Revisá el cliente y el rango de fechas/horarios."); setLoading(true); setMessage(""); try { const payload = toEvent(form); if (editingId) await api(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${editingId}`, token, { method: "PUT", body: JSON.stringify(payload) }); else await api(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events`, token, { method: "POST", body: JSON.stringify(payload) }); await loadEvents(); setSelectedDate(form.startDate); setModal(false); setMessage(editingId ? "Turno actualizado." : "Turno creado."); } catch (err) { setMessage(err.message); } finally { setLoading(false); } };
+  const remove = async id => { if (!window.confirm("¿Eliminar este turno?")) return; setLoading(true); try { await api(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${id}`, token, { method: "DELETE" }); setEvents(v => v.filter(e => e.id !== id)); setModal(false); } catch (e) { setMessage(e.message); } finally { setLoading(false); } };
+  const field = e => setForm(v => ({ ...v, [e.target.name]: e.target.value }));
+  if (!token) return <main className="admin-turnos admin-login"><section className="login-card"><span className="admin-eyebrow">RD PINTORES</span><h1>Agenda de turnos</h1><p>Ingresá con una cuenta autorizada.</p><button className="admin-primary google-login" onClick={login} disabled={!ready}>{ready ? "Continuar con Google" : "Cargando Google..."}</button>{error && <p className="auth-error">{error}</p>}<button className="admin-secondary" onClick={() => { window.location.href = "/"; }}>Volver al sitio</button></section></main>;
+  return <main className="admin-turnos"><header className="admin-header"><div><span className="admin-eyebrow">RD PINTORES</span><h1>Agenda de turnos</h1><p>Google Calendar · {email}</p></div><div className="admin-header-actions"><button className="admin-secondary" onClick={logout}>Cerrar sesión</button><button className="admin-secondary" onClick={() => { window.location.href = "/"; }}>Volver al sitio</button></div></header>{message && <div className="admin-message">{message}</div>}<section className="admin-layout"><div className="calendar-card"><div className="calendar-toolbar"><button onClick={() => setSelectedDate(today())}>Hoy</button><h2>{monthLabel}</h2><div><button onClick={() => { const d = new Date(`${selectedDate}T12:00:00`); d.setMonth(d.getMonth() - 1); setSelectedDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`); }}>‹</button><button onClick={() => { const d = new Date(`${selectedDate}T12:00:00`); d.setMonth(d.getMonth() + 1); setSelectedDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`); }}>›</button></div></div><div className="weekdays">{["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map(d => <span key={d}>{d}</span>)}</div><div className="calendar-grid">{days.map((date, i) => <button key={i} className={`calendar-day ${date === selectedDate ? "selected" : ""} ${!date ? "empty" : ""}`} onClick={() => date && setSelectedDate(date)}>{date && <><strong>{Number(date.slice(-2))}</strong>{occupied(date) && <i />}</>}</button>)}</div></div><aside className="day-card"><div className="day-heading"><div><span>TURNOS DEL DÍA</span><h2>{new Date(`${selectedDate}T12:00:00`).toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}</h2></div><button className="admin-primary" onClick={openNew}>+ Nuevo</button></div>{loading && <p className="empty-state">Sincronizando...</p>}{!loading && !dayEvents.length && <p className="empty-state">No hay trabajos para este día.</p>}{dayEvents.map(t => <article className="appointment" key={t.id}><div className="appointment-time">{t.start.dateTime.slice(11, 16)}<small>{t.end?.dateTime?.slice(0, 16).replace("T", " ")}</small></div><div className="appointment-info"><h3>{t.summary}</h3><p>{t.extendedProperties?.private?.service || "Trabajo"}</p><span>{t.location || "Sin dirección"}</span>{t.location && <a href={mapsUrl(t.location)} target="_blank" rel="noreferrer">📍 Abrir en Google Maps</a>}<div><button onClick={() => edit(t)}>Editar</button><button onClick={() => remove(t.id)}>Eliminar</button></div></div></article>)}</aside></section>{modal && <div className="turno-modal-backdrop" onMouseDown={e => e.target === e.currentTarget && setModal(false)}><form className="appointment-form turno-modal" onSubmit={save}><button type="button" className="modal-close" onClick={() => setModal(false)}>×</button><h2>{editingId ? "Editar turno" : "Nuevo turno"}</h2><div className="form-grid">{[["client","Cliente","text"],["address","Dirección","text"],["startDate","Fecha de inicio","date"],["endDate","Fecha de fin","date"],["start","Hora de inicio","time"],["end","Hora de fin","time"]].map(([name,label,type]) => <label key={name}>{label}<input required={name === "client" || name === "startDate" || name === "endDate"} name={name} type={type} value={form[name]} onChange={field} /></label>)}<label>Servicio<select name="service" value={form.service} onChange={field}><option>Pintura de pileta</option><option>Reparación</option><option>Enfibrado</option><option>Impermeabilización</option><option>Bombas y filtros</option><option>Otro</option></select></label><label className="full">Observaciones<textarea name="notes" value={form.notes} onChange={field} rows="3" /></label></div><div className="form-actions"><button type="button" className="admin-secondary" onClick={() => setModal(false)}>Cancelar</button><button className="admin-primary" type="submit" disabled={loading}>Guardar turno</button></div></form></div>}</main>;
 }
